@@ -1,0 +1,63 @@
+#!/bin/bash
+detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        DISTRO=$ID
+        case $ID in
+            "ubuntu"|"debian"|"linuxmint"|"pop"|"kubuntu"|"xubuntu"|"elementary"|"zorin"|"ubuntu-mate"|"neon"|"kali"|"ubuntu-studio")
+                DISTRO="debian-based"
+                ;;
+            "fedora")
+                DISTRO="fedora"
+                ;;
+            "opensuse-tumbleweed"|"opensuse-leap")
+                DISTRO="opensuse"
+                ;;
+            "manjaro"|"arch"|"endeavouros")
+                DISTRO="arch"
+                ;;
+            *)
+                echo "Unsupported distribution: $ID"
+                exit 1
+                ;;
+        esac
+    else
+        echo "Unsupported distribution"
+        exit 1
+    fi
+}
+
+if whiptail --yesno "Do you have BeamNG.Drive installed?" 10 50 --title "Confirmation"; then
+    echo "good"
+else
+    whiptail --msgbox "You need to have BeamNG.Drive installed via steam to make this work" 10 50 --title "ERROR"
+    exit 0
+fi
+cd
+detect_distro
+
+if [ "$DISTRO" == debian-based ]; then
+    sudo apt update
+    sudo apt install build-essential cmake git -y  
+elif [ "$DISTRO" == fedora ]; then
+    sudo dnf update -y
+    sudo dnf install git -y
+    sudo dnf groupinstall "Development Tools"
+elif [ "$DISTRO" == arch ]; then
+    sudo pacman -Syyu base-devel cmake git --noconfirm
+elif [ "$DISTRO" == opensuse ]; then
+    sudo zypper update
+    sudo zypper install pattern devel-basis cmake git -y
+fi
+
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg && ./bootstrap-vcpkg.sh --disableMetrics
+export VCPKG_ROOT="~/vcpkg"
+export PATH=$VCPKG_ROOT:$PATH
+cd
+git clone --recurse-submodules https://github.com/BeamMP/BeamMP-Launcher.git
+cd BeamMP-Launcher
+cmake -DCMAKE_BUILD_TYPE=Release . -B bin -DCMAKE_TOOLCHAIN_FILE="~/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-linux
+cmake --build bin --parallel --config Release
+echo "Finished"
+echo "To start BeamMP go to: ${HOME}/BeamMP-Launcher/bin/BeamMP-Launcher"
