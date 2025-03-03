@@ -38,7 +38,7 @@ detect_distro
 
 if [ "$DISTRO" == debian-based ]; then
     sudo apt update
-    sudo apt install git build-essential cmake git curl zip unzip tar -y  
+    sudo apt install git build-essential cmake git curl zip unzip tar linux-libc-dev -y  
 elif [ "$DISTRO" == fedora ]; then
     sudo dnf update -y
     sudo dnf install install curl git zip unzip tar -y
