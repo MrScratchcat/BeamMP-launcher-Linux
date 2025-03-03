@@ -38,16 +38,16 @@ detect_distro
 
 if [ "$DISTRO" == debian-based ]; then
     sudo apt update
-    sudo apt install build-essential cmake git -y  
+    sudo apt install git build-essential cmake git curl zip unzip tar -y  
 elif [ "$DISTRO" == fedora ]; then
     sudo dnf update -y
-    sudo dnf install git -y
+    sudo dnf install install curl git zip unzip tar -y
     sudo dnf groupinstall "Development Tools"
 elif [ "$DISTRO" == arch ]; then
-    sudo pacman -Syyu base-devel cmake git --noconfirm
+    sudo pacman -Syu base-devel git curl zip unzip tar cmake ninja --noconfirm
 elif [ "$DISTRO" == opensuse ]; then
     sudo zypper update
-    sudo zypper install pattern devel-basis cmake git -y
+    sudo zypper install curl zip unzip tar cmake-y
 fi
 
 git clone https://github.com/microsoft/vcpkg.git
