@@ -41,7 +41,7 @@ if [ "$DISTRO" == debian-based ]; then
     sudo apt install git build-essential cmake git curl zip unzip tar linux-libc-dev -y  
 elif [ "$DISTRO" == fedora ]; then
     sudo dnf update -y
-    sudo dnf install install curl git zip unzip tar cmake ninja gcc-c++ -y
+    sudo dnf install curl git zip unzip tar cmake ninja gcc-c++ -y
 elif [ "$DISTRO" == arch ]; then
     sudo pacman -Syu base-devel git curl zip unzip tar cmake ninja --noconfirm
 elif [ "$DISTRO" == opensuse ]; then
